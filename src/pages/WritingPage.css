@@ -1,0 +1,84 @@
+.writing-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--gray-50);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.panel {
+  height: 100%;
+  overflow: hidden;
+}
+
+.draft-section {
+  flex: 0 0 300px;
+}
+
+.editor-section {
+  flex: 1;
+  min-width: 400px;
+}
+
+.manuscript-section {
+  flex: 0 0 340px;
+}
+
+@media (max-width: 1200px) {
+  .main-content {
+    flex-wrap: wrap;
+  }
+
+  .draft-section,
+  .manuscript-section {
+    flex: 0 0 calc(50% - 8px);
+  }
+
+  .editor-section {
+    flex: 0 0 100%;
+    order: -1;
+    height: 50vh;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .draft-section,
+  .editor-section,
+  .manuscript-section {
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+  }
+}
+
+/* Drag Overlay */
+.drag-overlay-bundle {
+  padding: 12px 16px;
+  background: var(--white);
+  border: 2px solid var(--blue-400);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  cursor: grabbing;
+}
+
+.drag-overlay-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-900);
+}

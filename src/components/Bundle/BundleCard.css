@@ -1,0 +1,122 @@
+.bundle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bundle-card:hover {
+  border-color: var(--gray-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.bundle-card.selected {
+  border-color: var(--blue-500);
+  background: var(--blue-50);
+}
+
+.bundle-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.drag-handle {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  cursor: grab;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.drag-handle:hover {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.bundle-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bundle-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bundle-preview {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bundle-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--gray-400);
+}
+
+.meta-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--gray-300);
+  border-radius: 50%;
+}
+
+.bundle-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.bundle-card:hover .bundle-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-500);
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.action-btn.delete:hover {
+  background: #ffebee;
+  color: var(--red-500);
+}

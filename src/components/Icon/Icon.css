@@ -1,0 +1,15 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.icon-button {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.icon-button:hover {
+  color: var(--blue-500);
+}

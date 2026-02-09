@@ -1,0 +1,109 @@
+:root {
+  /* TDS Colors */
+  --gray-50: #f9fafb;
+  --gray-100: #f2f4f6;
+  --gray-200: #e5e8eb;
+  --gray-300: #d1d6db;
+  --gray-400: #b0b8c1;
+  --gray-500: #8b95a1;
+  --gray-600: #6b7684;
+  --gray-700: #4e5968;
+  --gray-800: #333d4b;
+  --gray-900: #191f28;
+
+  --blue-50: #e8f3ff;
+  --blue-100: #c9e2ff;
+  --blue-200: #90c2ff;
+  --blue-300: #64a8ff;
+  --blue-400: #4593fc;
+  --blue-500: #3182f6;
+  --blue-600: #2272eb;
+  --blue-700: #1b64da;
+  --blue-800: #1957c2;
+  --blue-900: #194aa6;
+
+  --red-50: #fff5f5;
+  --red-500: #f04452;
+  --red-600: #e53935;
+  --green-500: #30b06e;
+
+  --white: #ffffff;
+  --background: var(--gray-50);
+
+  /* Typography */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--gray-900);
+  background-color: var(--background);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Material Symbols */
+.material-symbols-rounded {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  user-select: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}

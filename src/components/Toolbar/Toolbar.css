@@ -1,0 +1,193 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.back-btn {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-600);
+  transition: all 0.15s ease;
+}
+
+.back-btn:hover {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.project-info {
+  display: flex;
+  align-items: center;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.project-name-input {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: 100%;
+  min-width: 80px;
+  max-width: 300px;
+  transition: all 0.15s ease;
+  text-overflow: ellipsis;
+}
+
+.project-name-input:hover {
+  background: var(--gray-50);
+}
+
+.project-name-input:focus {
+  background: var(--gray-100);
+}
+
+.project-name-input::placeholder {
+  color: var(--gray-400);
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.sync-status.online {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+.sync-status.offline {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-700);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.toolbar-btn span {
+  display: inline;
+}
+
+.toolbar-btn:hover:not(:disabled) {
+  background: var(--gray-100);
+  color: var(--gray-900);
+  border-color: var(--gray-300);
+}
+
+.toolbar-btn.primary {
+  background: var(--blue-500);
+  color: var(--white);
+  border-color: var(--blue-500);
+}
+
+.toolbar-btn.primary:hover:not(:disabled) {
+  background: var(--blue-600);
+  border-color: var(--blue-600);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 880px 이하: 버튼 텍스트 숨기고 아이콘만 표시 */
+@media (max-width: 880px) {
+  .toolbar-btn {
+    padding: 10px;
+  }
+
+  .toolbar-btn span {
+    display: none;
+  }
+
+  .sync-status span {
+    display: none;
+  }
+
+  .sync-status {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 10px 12px;
+  }
+
+  .project-name-input {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .toolbar-right {
+    gap: 4px;
+  }
+
+  .toolbar-btn {
+    padding: 8px;
+  }
+
+  .back-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
