@@ -116,7 +116,22 @@
   color: var(--gray-700);
 }
 
+.action-btn.move:hover {
+  background: var(--blue-50);
+  color: var(--blue-600);
+}
+
 .action-btn.delete:hover {
   background: #ffebee;
   color: var(--red-500);
+}
+
+@media (max-width: 768px) {
+  .bundle-actions {
+    opacity: 1;
+  }
+
+  .bundle-card {
+    padding: 14px 12px;
+  }
 }

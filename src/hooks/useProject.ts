@@ -239,6 +239,26 @@ export const useProject = () => {
     [project, updateProject]
   );
 
+  const reorderFragments = useCallback(
+    (bundleId: string, oldIndex: number, newIndex: number) => {
+      if (!project) return;
+      const updateBundles = (bundles: Bundle[]) =>
+        bundles.map((b) => {
+          if (b.id !== bundleId) return b;
+          const fragments = [...b.fragments];
+          const [removed] = fragments.splice(oldIndex, 1);
+          fragments.splice(newIndex, 0, removed);
+          return { ...b, fragments };
+        });
+
+      updateProject({
+        drafts: updateBundles(project.drafts),
+        manuscript: updateBundles(project.manuscript),
+      });
+    },
+    [project, updateProject]
+  );
+
   const setCurrentBundle = useCallback(
     (bundleId: string | null) => {
       if (!project) return;
@@ -296,6 +316,7 @@ export const useProject = () => {
     addFragment,
     updateFragment,
     deleteFragment,
+    reorderFragments,
     setCurrentBundle,
     setCurrentFragment,
     getCurrentBundle,

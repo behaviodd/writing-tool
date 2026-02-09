@@ -18,6 +18,8 @@ export const FormatSidebar = ({
   };
 
   return (
+    <>
+    <div className="format-sidebar-overlay" onClick={onClose} />
     <div className="format-sidebar">
       <div className="sidebar-header">
         <h3>서식 설정</h3>
@@ -130,5 +132,6 @@ export const FormatSidebar = ({
         </div>
       </div>
     </div>
+    </>
   );
 };

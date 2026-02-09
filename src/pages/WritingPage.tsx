@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   DndContext,
@@ -22,13 +22,16 @@ import { FormatSidebar } from '../components/FormatSidebar/FormatSidebar';
 import { ConfirmModal } from '../components/ConfirmModal/ConfirmModal';
 import { PreviewModal } from '../components/PreviewModal/PreviewModal';
 import { HelpModal } from '../components/HelpModal/HelpModal';
+import { Icon } from '../components/Icon/Icon';
 import type { Bundle, FormattingOptions } from '../types';
 import './WritingPage.css';
+
+type MobileTab = 'drafts' | 'editor' | 'manuscript';
 
 export const WritingPage = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFormatSidebar, setShowFormatSidebar] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -36,6 +39,7 @@ export const WritingPage = () => {
   const [activeBundle, setActiveBundle] = useState<Bundle | null>(null);
   const [overContainer, setOverContainer] = useState<string | null>(null);
   const [bundleToDelete, setBundleToDelete] = useState<string | null>(null);
+  const [mobileTab, setMobileTab] = useState<MobileTab>('editor');
 
   const {
     project,
@@ -45,15 +49,23 @@ export const WritingPage = () => {
     deleteBundle,
     reorderBundles,
     moveBundleBetweenContainers,
+    moveBundleToManuscript,
+    moveBundleToDraft,
     addFragment,
     updateFragment,
     deleteFragment,
+    reorderFragments,
     setCurrentBundle,
     setCurrentFragment,
     getCurrentBundle,
     getCurrentFragment,
     loadProjectById,
   } = useProject();
+
+  const handleMobileSelectBundle = useCallback((bundleId: string) => {
+    setCurrentBundle(bundleId);
+    setMobileTab('editor');
+  }, [setCurrentBundle]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -64,16 +76,22 @@ export const WritingPage = () => {
     useSensor(KeyboardSensor)
   );
 
-  useAutoSave(project, 30000, user?.uid);
+  const { save, lastSavedAt } = useAutoSave(project, 30000, user?.uid);
 
   useEffect(() => {
-    if (projectId) {
+    if (!loading && !user) {
+      navigate('/');
+    }
+  }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (projectId && user) {
       const loaded = loadProjectById(projectId);
       if (!loaded) {
         navigate('/');
       }
     }
-  }, [projectId]);
+  }, [projectId, user]);
 
   const currentBundle = getCurrentBundle();
   const currentFragment = getCurrentFragment();
@@ -192,7 +210,7 @@ export const WritingPage = () => {
     }
   };
 
-  if (!project) {
+  if (loading || !user || !project) {
     return null;
   }
 
@@ -202,6 +220,8 @@ export const WritingPage = () => {
         project={project}
         onUpdateProjectName={(name) => updateProject({ name })}
         onGoBack={handleGoBack}
+        onSave={save}
+        lastSavedAt={lastSavedAt}
       />
 
       <DndContext
@@ -212,19 +232,20 @@ export const WritingPage = () => {
         onDragEnd={handleDragEnd}
       >
         <main className="main-content">
-          <div className="panel draft-section">
+          <div className={`panel draft-section mobile-tab-panel ${mobileTab === 'drafts' ? 'mobile-active' : ''}`}>
             <DraftPanel
               bundles={project.drafts}
               currentBundleId={project.currentBundleId}
-              onSelectBundle={setCurrentBundle}
+              onSelectBundle={handleMobileSelectBundle}
               onDeleteBundle={handleDeleteBundle}
+              onMoveBundle={moveBundleToManuscript}
               onAddBundle={() => setShowCreateModal(true)}
               onShowHelp={() => setShowHelpModal(true)}
               isDropTarget={overContainer === 'drafts'}
             />
           </div>
 
-          <div className="panel editor-section">
+          <div className={`panel editor-section mobile-tab-panel ${mobileTab === 'editor' ? 'mobile-active' : ''}`}>
             <Editor
               bundle={currentBundle}
               currentFragment={currentFragment}
@@ -234,15 +255,26 @@ export const WritingPage = () => {
               onDeleteFragment={deleteFragment}
               onSelectFragment={setCurrentFragment}
               onUpdateBundleTitle={handleUpdateBundleTitle}
+              onReorderFragment={reorderFragments}
+              onToggleLocation={() => {
+                if (!currentBundle) return;
+                if (bundleLocation === 'drafts') {
+                  moveBundleToManuscript(currentBundle.id);
+                } else if (bundleLocation === 'manuscript') {
+                  moveBundleToDraft(currentBundle.id);
+                }
+              }}
+              onMobileBack={() => setMobileTab(bundleLocation || 'drafts')}
             />
           </div>
 
-          <div className="panel manuscript-section">
+          <div className={`panel manuscript-section mobile-tab-panel ${mobileTab === 'manuscript' ? 'mobile-active' : ''}`}>
             <ManuscriptPanel
               bundles={project.manuscript}
               currentBundleId={project.currentBundleId}
-              onSelectBundle={setCurrentBundle}
+              onSelectBundle={handleMobileSelectBundle}
               onDeleteBundle={handleDeleteBundle}
+              onMoveBundle={moveBundleToDraft}
               onToggleFormat={() => setShowFormatSidebar(!showFormatSidebar)}
               onOpenPreview={() => setShowPreviewModal(true)}
               showFormatSidebar={showFormatSidebar}
@@ -250,6 +282,36 @@ export const WritingPage = () => {
             />
           </div>
         </main>
+
+        <nav className="mobile-tab-bar">
+          <button
+            className={`mobile-tab ${mobileTab === 'drafts' ? 'active' : ''}`}
+            onClick={() => setMobileTab('drafts')}
+          >
+            <Icon name="edit_note" size={22} />
+            <span>초안</span>
+            {project.drafts.length > 0 && (
+              <span className="mobile-tab-badge">{project.drafts.length}</span>
+            )}
+          </button>
+          <button
+            className={`mobile-tab ${mobileTab === 'editor' ? 'active' : ''}`}
+            onClick={() => setMobileTab('editor')}
+          >
+            <Icon name="edit_document" size={22} />
+            <span>에디터</span>
+          </button>
+          <button
+            className={`mobile-tab ${mobileTab === 'manuscript' ? 'active' : ''}`}
+            onClick={() => setMobileTab('manuscript')}
+          >
+            <Icon name="article" size={22} />
+            <span>원고</span>
+            {project.manuscript.length > 0 && (
+              <span className="mobile-tab-badge">{project.manuscript.length}</span>
+            )}
+          </button>
+        </nav>
 
         <DragOverlay>
           {activeBundle && (

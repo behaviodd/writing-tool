@@ -13,6 +13,7 @@ interface DraftPanelProps {
   currentBundleId: string | null;
   onSelectBundle: (bundleId: string) => void;
   onDeleteBundle: (bundleId: string) => void;
+  onMoveBundle?: (bundleId: string) => void;
   onAddBundle: () => void;
   onShowHelp: () => void;
   isDropTarget?: boolean;
@@ -23,6 +24,7 @@ export const DraftPanel = ({
   currentBundleId,
   onSelectBundle,
   onDeleteBundle,
+  onMoveBundle,
   onAddBundle,
   onShowHelp,
   isDropTarget = false,
@@ -71,6 +73,8 @@ export const DraftPanel = ({
                 isSelected={bundle.id === currentBundleId}
                 onSelect={() => onSelectBundle(bundle.id)}
                 onDelete={() => onDeleteBundle(bundle.id)}
+                onMove={onMoveBundle ? () => onMoveBundle(bundle.id) : undefined}
+                moveLabel="원고로 이동"
               />
             ))}
           </SortableContext>

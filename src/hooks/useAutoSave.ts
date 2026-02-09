@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Project } from '../types';
 import { saveProject } from '../utils/storage';
 
@@ -9,6 +9,7 @@ export const useAutoSave = (
 ) => {
   const projectRef = useRef(project);
   const userIdRef = useRef(userId);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
 
   useEffect(() => {
     projectRef.current = project;
@@ -18,15 +19,20 @@ export const useAutoSave = (
     userIdRef.current = userId;
   }, [userId]);
 
+  const save = useCallback(() => {
+    if (projectRef.current) {
+      saveProject(projectRef.current, userIdRef.current);
+      setLastSavedAt(Date.now());
+    }
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      if (projectRef.current) {
-        saveProject(projectRef.current, userIdRef.current);
-      }
+      save();
     }, interval);
 
     return () => clearInterval(timer);
-  }, [interval]);
+  }, [interval, save]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -38,4 +44,6 @@ export const useAutoSave = (
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
+
+  return { save, lastSavedAt };
 };

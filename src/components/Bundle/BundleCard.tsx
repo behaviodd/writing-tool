@@ -9,6 +9,8 @@ interface BundleCardProps {
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
+  onMove?: () => void;
+  moveLabel?: string;
 }
 
 export const BundleCard = ({
@@ -16,6 +18,8 @@ export const BundleCard = ({
   isSelected,
   onSelect,
   onDelete,
+  onMove,
+  moveLabel,
 }: BundleCardProps) => {
   const {
     attributes,
@@ -61,6 +65,18 @@ export const BundleCard = ({
         </div>
       </div>
       <div className="bundle-actions">
+        {onMove && (
+          <button
+            className="action-btn move"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMove();
+            }}
+            title={moveLabel || '이동'}
+          >
+            <Icon name="drive_file_move" size={18} />
+          </button>
+        )}
         <button
           className="action-btn delete"
           onClick={(e) => {

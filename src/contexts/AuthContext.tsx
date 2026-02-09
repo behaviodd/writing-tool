@@ -4,15 +4,22 @@ import {
   signInWithPopup,
   signOut as firebaseSignOut,
   onAuthStateChanged,
+  GoogleAuthProvider,
 } from 'firebase/auth';
-import type { User } from 'firebase/auth';
+import type { User, AuthError } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
+
+interface GoogleToken {
+  accessToken: string;
+  obtainedAt: number;
+}
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  getGoogleAccessToken: () => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,6 +39,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [googleToken, setGoogleToken] = useState<GoogleToken | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -44,16 +52,56 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      if (credential?.accessToken) {
+        setGoogleToken({
+          accessToken: credential.accessToken,
+          obtainedAt: Date.now(),
+        });
+      }
     } catch (error) {
+      const authError = error as AuthError;
+      const ignorable = [
+        'auth/popup-closed-by-user',
+        'auth/cancelled-popup-request',
+        'auth/popup-blocked',
+      ];
+      if (ignorable.includes(authError.code)) {
+        return;
+      }
       console.error('Google sign in error:', error);
       throw error;
     }
   };
 
+  const getGoogleAccessToken = async (): Promise<string> => {
+    const TOKEN_LIFETIME_MS = 50 * 60 * 1000; // 50 minutes
+
+    if (
+      googleToken &&
+      Date.now() - googleToken.obtainedAt < TOKEN_LIFETIME_MS
+    ) {
+      return googleToken.accessToken;
+    }
+
+    // Token expired or not available — re-authenticate
+    const result = await signInWithPopup(auth, googleProvider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (!credential?.accessToken) {
+      throw new Error('Google access token을 가져올 수 없습니다.');
+    }
+    setGoogleToken({
+      accessToken: credential.accessToken,
+      obtainedAt: Date.now(),
+    });
+    return credential.accessToken;
+  };
+
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
+      setGoogleToken(null);
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -61,7 +109,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signInWithGoogle, signOut, getGoogleAccessToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

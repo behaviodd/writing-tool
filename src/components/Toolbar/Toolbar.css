@@ -6,7 +6,7 @@
   background: var(--white);
   border-bottom: 1px solid var(--gray-100);
   gap: 12px;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .toolbar-left {
@@ -99,7 +99,21 @@
   color: #e65100;
 }
 
-.toolbar-btn {
+.save-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.last-saved-time {
+  font-size: 12px;
+  color: var(--gray-400);
+  white-space: nowrap;
+}
+
+/* Scoped: only Toolbar's own buttons */
+.toolbar .toolbar-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -116,43 +130,51 @@
   flex-shrink: 0;
 }
 
-.toolbar-btn span {
+.toolbar .toolbar-btn span.icon {
+  display: inline-flex;
+}
+
+.toolbar .toolbar-btn > span:not(.icon) {
   display: inline;
 }
 
-.toolbar-btn:hover:not(:disabled) {
+.toolbar .toolbar-btn:hover:not(:disabled) {
   background: var(--gray-100);
   color: var(--gray-900);
   border-color: var(--gray-300);
 }
 
-.toolbar-btn.primary {
+.toolbar .toolbar-btn.primary {
   background: var(--blue-500);
   color: var(--white);
   border-color: var(--blue-500);
 }
 
-.toolbar-btn.primary:hover:not(:disabled) {
+.toolbar .toolbar-btn.primary:hover:not(:disabled) {
   background: var(--blue-600);
   border-color: var(--blue-600);
 }
 
-.toolbar-btn:disabled {
+.toolbar .toolbar-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* 880px 이하: 버튼 텍스트 숨기고 아이콘만 표시 */
+/* 880px: hide button text, keep icons */
 @media (max-width: 880px) {
-  .toolbar-btn {
+  .toolbar .toolbar-btn {
     padding: 10px;
   }
 
-  .toolbar-btn span {
+  .toolbar .toolbar-btn > span:not(.icon) {
     display: none;
   }
 
-  .sync-status span {
+  .sync-status > span:not(.icon) {
+    display: none;
+  }
+
+  .last-saved-time {
     display: none;
   }
 
@@ -170,19 +192,28 @@
     font-size: 14px;
     padding: 6px 10px;
   }
+
+  /* Hide less-important buttons on mobile */
+  .toolbar .toolbar-btn:not(.save-btn):not(.primary) {
+    display: none;
+  }
+
+  .sync-status {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
   .toolbar {
     padding: 8px 10px;
-    gap: 8px;
+    gap: 6px;
   }
 
   .toolbar-right {
     gap: 4px;
   }
 
-  .toolbar-btn {
+  .toolbar .toolbar-btn {
     padding: 8px;
   }
 

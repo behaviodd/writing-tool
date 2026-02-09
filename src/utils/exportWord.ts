@@ -144,10 +144,9 @@ const splitIntoParagraphs = (html: string): string[] => {
   return content.split('\n').filter((p) => p.trim() !== '');
 };
 
-export const exportToWord = async (
-  bundles: Bundle[],
-  filename: string
-): Promise<void> => {
+export const generateWordBlob = async (
+  bundles: Bundle[]
+): Promise<Blob> => {
   const paragraphs: Paragraph[] = [];
 
   bundles.forEach((bundle, bundleIndex) => {
@@ -197,7 +196,14 @@ export const exportToWord = async (
     ],
   });
 
-  const blob = await Packer.toBlob(doc);
+  return await Packer.toBlob(doc);
+};
+
+export const exportToWord = async (
+  bundles: Bundle[],
+  filename: string
+): Promise<void> => {
+  const blob = await generateWordBlob(bundles);
   saveAs(blob, `${filename}.docx`);
 };
 

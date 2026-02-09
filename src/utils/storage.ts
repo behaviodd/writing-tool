@@ -103,19 +103,6 @@ export const getAllProjects = (): ProjectMeta[] => {
   return state.projects.sort((a, b) => b.updatedAt - a.updatedAt);
 };
 
-export const exportProjectToJson = (project: Project): void => {
-  const dataStr = JSON.stringify(project, null, 2);
-  const blob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${project.name}_${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
 export const importProjectFromJson = (file: File): Promise<Project> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -189,6 +176,7 @@ export const loadProjectsFromFirestore = async (
 export const syncFromFirestore = async (userId: string): Promise<void> => {
   try {
     const firestoreProjects = await loadProjectsFromFirestore(userId);
+    const firestoreIds = new Set(firestoreProjects.map((p) => p.id));
 
     for (const project of firestoreProjects) {
       const localProject = loadProject(project.id);
@@ -205,6 +193,16 @@ export const syncFromFirestore = async (userId: string): Promise<void> => {
       ...state.projects.map((p) => p.id),
       ...firestoreProjects.map((p) => p.id),
     ]);
+
+    // Push local-only projects to Firestore
+    for (const id of allProjectIds) {
+      if (!firestoreIds.has(id)) {
+        const localProject = loadProject(id);
+        if (localProject) {
+          syncProjectToFirestore(userId, localProject).catch(console.error);
+        }
+      }
+    }
 
     state.projects = [];
     for (const id of allProjectIds) {

@@ -135,3 +135,16 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
 }
+
+@media (max-width: 768px) {
+  .draft-panel {
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--gray-100);
+    width: 100%;
+  }
+
+  .bundle-list {
+    padding: 8px;
+  }
+}

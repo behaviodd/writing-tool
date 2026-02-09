@@ -14,6 +14,7 @@ interface ManuscriptPanelProps {
   currentBundleId: string | null;
   onSelectBundle: (bundleId: string) => void;
   onDeleteBundle: (bundleId: string) => void;
+  onMoveBundle?: (bundleId: string) => void;
   onToggleFormat: () => void;
   onOpenPreview: () => void;
   showFormatSidebar: boolean;
@@ -25,6 +26,7 @@ export const ManuscriptPanel = ({
   currentBundleId,
   onSelectBundle,
   onDeleteBundle,
+  onMoveBundle,
   onToggleFormat,
   onOpenPreview,
   showFormatSidebar,
@@ -91,6 +93,8 @@ export const ManuscriptPanel = ({
                     isSelected={bundle.id === currentBundleId}
                     onSelect={() => onSelectBundle(bundle.id)}
                     onDelete={() => onDeleteBundle(bundle.id)}
+                    onMove={onMoveBundle ? () => onMoveBundle(bundle.id) : undefined}
+                    moveLabel="초안으로 이동"
                   />
                 ))}
               </SortableContext>
