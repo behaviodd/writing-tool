@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon/Icon';
-import { ThemeSettings } from '../components/ThemeSettings/ThemeSettings';
+import { ConfirmModal } from '../components/ConfirmModal/ConfirmModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import type { ProjectMeta } from '../types';
@@ -20,7 +20,6 @@ export const ProjectListPage = () => {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
   const [projects, setProjects] = useState<ProjectMeta[]>([]);
   const [syncing, setSyncing] = useState(false);
-  const [showThemeSettings, setShowThemeSettings] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   const refreshProjects = () => {
@@ -52,11 +51,22 @@ export const ProjectListPage = () => {
     navigate(`/project/${projectId}`);
   };
 
-  const handleDeleteProject = (e: React.MouseEvent, projectId: string) => {
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
+
+  const handleDeleteClick = (e: React.MouseEvent, projectId: string) => {
     e.stopPropagation();
-    if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-      deleteProjectFromStorage(projectId, user?.uid);
+    setProjectToDelete(projectId);
+  };
+
+  const calculateDelete = (e: React.MouseEvent, projectId: string) => {
+    // Kept for reference but unused, replacing with handleDeleteClick
+  }
+
+  const handleConfirmDelete = () => {
+    if (projectToDelete) {
+      deleteProjectFromStorage(projectToDelete, user?.uid);
       refreshProjects();
+      setProjectToDelete(null);
     }
   };
 
@@ -109,11 +119,23 @@ export const ProjectListPage = () => {
 
   if (!user) {
     return (
-      <div className="project-list-page">
-        <div className="login-screen">
-          <div className="login-content">
+      <div className="landing-page">
+        <header className="landing-header">
+          <div className="landing-header-content">
             <h1>글쓰기 도구</h1>
-            <p className="login-description">오프라인에서도 사용 가능한 작가용 글쓰기 도구</p>
+            <button className="theme-toggle-btn" onClick={toggleTheme} title={theme === 'light' ? '다크 모드' : '라이트 모드'}>
+              <Icon name={theme === 'light' ? 'dark_mode' : 'light_mode'} size={20} />
+            </button>
+          </div>
+        </header>
+
+        <section className="hero-section">
+          <div className="hero-content">
+            <h2 className="hero-title">작가들을 위한<br />가장 심플한 글쓰기 도구</h2>
+            <p className="hero-description">
+              복잡한 기능은 덜어내고 오직 글쓰기에만 집중하세요.<br />
+              인터넷이 없어도, 언제 어디서나 당신의 영감을 기록할 수 있습니다.
+            </p>
             <button className="google-sign-in-btn large" onClick={handleGoogleSignIn}>
               <svg viewBox="0 0 24 24" width="20" height="20">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -121,10 +143,79 @@ export const ProjectListPage = () => {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              <span>Google로 로그인</span>
+              <span>Google로 시작하기</span>
             </button>
           </div>
-        </div>
+        </section>
+
+        <section className="features-section">
+          <div className="section-content">
+            <h3>주요 기능</h3>
+            <div className="feature-grid">
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <Icon name="wifi_off" size={32} />
+                </div>
+                <h4>오프라인 지원</h4>
+                <p>인터넷 연결이 끊겨도 걱정하지 마세요. 작업 내용은 안전하게 저장됩니다.</p>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <Icon name="cloud_sync" size={32} />
+                </div>
+                <h4>자동 동기화</h4>
+                <p>온라인 상태가 되면 모든 작업이 클라우드에 자동으로 안전하게 백업됩니다.</p>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <Icon name="edit_note" size={32} />
+                </div>
+                <h4>초안과 원고 관리</h4>
+                <p>떠오르는 생각을 '초안'에 적고, 다듬어진 글은 '원고'로 옮겨 체계적으로 관리하세요.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guide-section">
+          <div className="section-content">
+            <h3>사용 방법</h3>
+            <div className="guide-steps">
+              <div className="guide-step">
+                <span className="step-number">1</span>
+                <div className="step-content">
+                  <h4>프로젝트 만들기</h4>
+                  <p>새로운 글쓰기 프로젝트를 생성하고 제목을 정해주세요.</p>
+                </div>
+              </div>
+              <div className="guide-step">
+                <span className="step-number">2</span>
+                <div className="step-content">
+                  <h4>초안 작성하기</h4>
+                  <p>에디터에서 자유롭게 글을 쓰고 '초안' 탭에 저장하세요. 여러 개의 초안을 만들 수 있습니다.</p>
+                </div>
+              </div>
+              <div className="guide-step">
+                <span className="step-number">3</span>
+                <div className="step-content">
+                  <h4>원고 완성하기</h4>
+                  <p>완성된 초안을 드래그하여 '원고' 탭으로 옮기세요. 원고에 있는 글들은 순서를 자유롭게 바꿀 수 있습니다.</p>
+                </div>
+              </div>
+              <div className="guide-step">
+                <span className="step-number">4</span>
+                <div className="step-content">
+                  <h4>내보내기</h4>
+                  <p>완성된 원고는 Word 파일로 다운로드하거나 Google Drive에 바로 저장할 수 있습니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer className="landing-footer">
+          <p>© 2024 Writing Tool. All rights reserved.</p>
+        </footer>
       </div>
     );
   }
@@ -149,9 +240,6 @@ export const ProjectListPage = () => {
                     <button className="theme-toggle-btn" onClick={toggleTheme} title={theme === 'light' ? '다크 모드' : '라이트 모드'}>
                       <Icon name={theme === 'light' ? 'dark_mode' : 'light_mode'} size={16} />
                     </button>
-                    <button className="settings-btn" onClick={() => setShowThemeSettings(true)}>
-                      화면 설정
-                    </button>
                     <span className="divider">|</span>
                     <button className="sign-out-btn" onClick={handleSignOut}>
                       로그아웃
@@ -170,9 +258,6 @@ export const ProjectListPage = () => {
         </div>
       </header>
 
-      {showThemeSettings && (
-        <ThemeSettings onClose={() => setShowThemeSettings(false)} />
-      )}
 
       <main className="page-content">
         <div className="section-header">
@@ -204,12 +289,9 @@ export const ProjectListPage = () => {
                 onClick={() => handleOpenProject(project.id)}
               >
                 <div className="card-header">
-                  <div className="card-icon">
-                    <Icon name="description" size={24} />
-                  </div>
                   <button
                     className="delete-btn"
-                    onClick={(e) => handleDeleteProject(e, project.id)}
+                    onClick={(e) => handleDeleteClick(e, project.id)}
                   >
                     <Icon name="delete" size={20} />
                   </button>
@@ -233,6 +315,17 @@ export const ProjectListPage = () => {
           </div>
         )}
       </main>
+
+      {projectToDelete && (
+        <ConfirmModal
+          title="프로젝트 삭제"
+          message="정말로 이 프로젝트를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+          confirmText="삭제"
+          isDestructive
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setProjectToDelete(null)}
+        />
+      )}
 
     </div>
   );

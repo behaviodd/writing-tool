@@ -1,40 +1,49 @@
+import React from 'react';
 import { Icon } from '../Icon/Icon';
 import './ConfirmModal.css';
 
 interface ConfirmModalProps {
+  title: string;
   message: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
+  confirmText?: string;
+  cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  isDestructive?: boolean;
 }
 
-export const ConfirmModal = ({
+export const ConfirmModal: React.FC<ConfirmModalProps> = ({
+  title,
   message,
-  confirmLabel = '삭제',
-  cancelLabel = '취소',
+  confirmText = '확인',
+  cancelText = '취소',
   onConfirm,
   onCancel,
-}: ConfirmModalProps) => {
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onCancel();
-    }
-  };
-
+  isDestructive = false,
+}) => {
   return (
-    <div className="confirm-backdrop" onClick={handleBackdropClick}>
-      <div className="confirm-content">
-        <div className="confirm-icon">
-          <Icon name="warning" size={32} />
-        </div>
-        <p className="confirm-message">{message}</p>
-        <div className="confirm-actions">
-          <button className="btn-cancel" onClick={onCancel}>
-            {cancelLabel}
+    <div className="confirm-modal-overlay" onClick={onCancel}>
+      <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="confirm-modal-header">
+          <h3>{title}</h3>
+          <button className="close-btn" onClick={onCancel}>
+            <Icon name="close" size={20} />
           </button>
-          <button className="btn-confirm" onClick={onConfirm}>
-            {confirmLabel}
+        </div>
+
+        <div className="confirm-modal-content">
+          <p>{message}</p>
+        </div>
+
+        <div className="confirm-modal-actions">
+          <button className="btn-secondary" onClick={onCancel}>
+            {cancelText}
+          </button>
+          <button
+            className={`btn-primary ${isDestructive ? 'destructive' : ''}`}
+            onClick={onConfirm}
+          >
+            {confirmText}
           </button>
         </div>
       </div>
