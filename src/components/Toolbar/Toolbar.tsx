@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Project } from '../../types';
 import { exportToWord, generateWordBlob } from '../../utils/exportWord';
 import { uploadToGoogleDrive } from '../../utils/googleDrive';
@@ -42,7 +42,20 @@ export const Toolbar = ({
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastFading, setToastFading] = useState(false);
   const [showThemeSettings, setShowThemeSettings] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const settingsMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSettingsMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (settingsMenuRef.current && !settingsMenuRef.current.contains(e.target as Node)) {
+        setShowSettingsMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSettingsMenu]);
 
   const showToast = (message: string) => {
     setToastFading(false);
@@ -63,6 +76,7 @@ export const Toolbar = ({
   };
 
   const handleDownloadWord = async () => {
+    setShowSettingsMenu(false);
     if (project.manuscript.length === 0) {
       alert('원고에 글 묶음이 없습니다.');
       return;
@@ -109,6 +123,11 @@ export const Toolbar = ({
     setIsSavingToDrive(false);
   };
 
+  const handleToggleTheme = () => {
+    toggleTheme();
+    setShowSettingsMenu(false);
+  };
+
   return (
     <header className="toolbar">
       <div className="toolbar-left">
@@ -130,30 +149,41 @@ export const Toolbar = ({
       </div>
 
       <div className="toolbar-right">
-        <button className="toolbar-btn" onClick={toggleTheme} title={theme === 'light' ? '다크 모드' : '라이트 모드'}>
-          <Icon name={theme === 'light' ? 'dark_mode' : 'light_mode'} size={20} />
-        </button>
-        <button className="toolbar-btn" onClick={() => setShowThemeSettings(true)} title="설정">
-          <Icon name="settings" size={20} />
-        </button>
-        <button className="toolbar-btn save-btn" onClick={handleSave}>
-          <Icon name="save" size={20} />
-        </button>
+        <div className="settings-menu-wrapper" ref={settingsMenuRef}>
+          <button
+            className="toolbar-btn settings-btn"
+            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+            title="설정"
+          >
+            <Icon name="settings" size={20} />
+          </button>
+          {showSettingsMenu && (
+            <div className="settings-dropdown">
+              <button className="settings-dropdown-item" onClick={handleToggleTheme}>
+                <Icon name={theme === 'light' ? 'dark_mode' : 'light_mode'} size={18} />
+                <span>{theme === 'light' ? '다크 모드' : '라이트 모드'}</span>
+              </button>
+              <button
+                className="settings-dropdown-item"
+                onClick={handleDownloadWord}
+                disabled={isExporting || project.manuscript.length === 0}
+              >
+                <Icon name="description" size={18} />
+                <span>{isExporting ? '다운로드 중...' : '원고 다운로드'}</span>
+              </button>
+            </div>
+          )}
+        </div>
         <button
-          className="toolbar-btn"
-          onClick={handleDownloadWord}
-          disabled={isExporting || project.manuscript.length === 0}
-        >
-          <Icon name="description" size={20} />
-          <span>{isExporting ? '다운로드 중...' : '원고 다운로드'}</span>
-        </button>
-        <button
-          className="toolbar-btn primary drive-btn"
+          className="toolbar-btn drive-btn"
           onClick={handleSaveToDrive}
           disabled={isSavingToDrive || project.manuscript.length === 0}
+          title="구글 드라이브에 저장"
         >
           <Icon name="add_to_drive" size={20} />
-          <span>{isSavingToDrive ? '저장 중...' : '드라이브에 저장'}</span>
+        </button>
+        <button className="toolbar-btn primary save-btn" onClick={handleSave} title="저장">
+          <span>저장</span>
         </button>
       </div>
       {toastMessage && (

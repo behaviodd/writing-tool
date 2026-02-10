@@ -1,0 +1,138 @@
+.shared-view-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+
+.shared-view-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.shared-view-header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.shared-view-char-count {
+  padding: 4px 10px;
+  background: var(--gray-100);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.shared-view-badge {
+  margin-left: auto;
+  padding: 4px 10px;
+  background: var(--gray-100);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-500);
+}
+
+.shared-view-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.shared-view-frame {
+  width: 100%;
+  max-width: 800px;
+  background: var(--surface);
+  padding: 48px;
+  height: fit-content;
+}
+
+.shared-view-document {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.shared-view-bundle {
+  color: var(--gray-800);
+}
+
+.shared-view-bundle .shared-bundle-content p {
+  margin: 0;
+}
+
+.shared-view-footer {
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--gray-400);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Loading state */
+.shared-view-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  color: var(--gray-500);
+}
+
+.shared-view-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--gray-500);
+  border-radius: 50%;
+  animation: shared-spin 0.8s linear infinite;
+}
+
+@keyframes shared-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Not found / error state */
+.shared-view-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 12px;
+  color: var(--gray-400);
+  text-align: center;
+  padding: 20px;
+}
+
+.shared-view-error p {
+  font-size: 16px;
+  color: var(--gray-500);
+}
+
+@media (max-width: 768px) {
+  .shared-view-header {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+
+  .shared-view-header h1 {
+    font-size: 16px;
+  }
+
+  .shared-view-content {}
+
+  .shared-view-frame {
+    padding: 24px;
+  }
+}

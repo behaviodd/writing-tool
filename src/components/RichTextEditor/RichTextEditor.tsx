@@ -125,6 +125,42 @@ export const RichTextEditor = ({
             <Icon name="strikethrough_s" size={18} />
           </button>
         </div>
+        <div className="toolbar-divider" />
+        <div className="toolbar-group">
+          <button
+            type="button"
+            className={`toolbar-btn ${isFormatActive('justifyLeft') ? 'active' : ''}`}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              execCommand('justifyLeft');
+            }}
+            title="왼쪽 정렬"
+          >
+            <Icon name="format_align_left" size={18} />
+          </button>
+          <button
+            type="button"
+            className={`toolbar-btn ${isFormatActive('justifyCenter') ? 'active' : ''}`}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              execCommand('justifyCenter');
+            }}
+            title="가운데 정렬"
+          >
+            <Icon name="format_align_center" size={18} />
+          </button>
+          <button
+            type="button"
+            className={`toolbar-btn ${isFormatActive('justifyRight') ? 'active' : ''}`}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              execCommand('justifyRight');
+            }}
+            title="오른쪽 정렬"
+          >
+            <Icon name="format_align_right" size={18} />
+          </button>
+        </div>
         <div className="toolbar-spacer" />
         <span className="char-count">{getTextLength()}자</span>
       </div>

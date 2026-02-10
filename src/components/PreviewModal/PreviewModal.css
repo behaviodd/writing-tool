@@ -125,7 +125,7 @@
   max-width: 800px;
   background: var(--surface);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
   padding: 48px;
   height: fit-content;
 }
@@ -159,6 +159,139 @@
   margin: 0;
 }
 
+/* ── Shared spinner ── */
+.share-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gray-200);
+  border-top-color: var(--gray-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ══════════════════════════════════════
+   Desktop share controls (inline header)
+   ══════════════════════════════════════ */
+.share-desktop {
+  display: flex;
+  align-items: center;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--gray-900);
+  color: var(--gray-50);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.share-btn:hover:not(:disabled) {
+  background: var(--gray-800);
+}
+
+.share-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.share-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+.share-active-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--gray-100);
+  border-radius: 10px;
+}
+
+.share-link-btn,
+.share-update-btn,
+.share-revoke-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.share-link-btn {
+  color: var(--gray-700);
+}
+
+.share-link-btn:hover {
+  background: var(--gray-200);
+}
+
+.share-link-btn.copied {
+  color: var(--green-500);
+}
+
+.share-update-btn {
+  color: var(--gray-600);
+}
+
+.share-update-btn:hover {
+  background: var(--surface);
+  color: var(--gray-800);
+}
+
+.share-revoke-btn {
+  color: var(--red-500);
+}
+
+.share-revoke-btn:hover {
+  background: var(--red-50);
+}
+
+.share-error-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--red-500);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.share-error-btn:hover {
+  background: var(--red-600);
+}
+
+/* ══════════════════════════════════════
+   Mobile share bar (bottom of modal)
+   ══════════════════════════════════════ */
+.share-mobile-bar {
+  display: none;
+}
+
+/* ══════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════ */
 @media (max-width: 768px) {
   .preview-modal-header {
     padding: 12px 16px;
@@ -176,10 +309,181 @@
 
   .preview-modal-content {
     padding: 16px;
+    padding-bottom: 0;
   }
 
   .preview-frame {
     padding: 24px;
     border-radius: 8px;
+  }
+
+  /* Hide desktop share controls on mobile */
+  .share-desktop {
+    display: none;
+  }
+
+  /* Show mobile bottom bar */
+  .share-mobile-bar {
+    display: block;
+    flex-shrink: 0;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Checking ── */
+  .smb-checking {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+  }
+
+  /* ── Create button (idle) ── */
+  .smb-create {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: var(--gray-900);
+    color: var(--gray-50);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+
+  .smb-create:hover:not(:disabled) {
+    background: var(--gray-800);
+  }
+
+  .smb-create:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Loading ── */
+  .smb-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    font-size: 14px;
+    color: var(--gray-500);
+  }
+
+  /* ── Active ── */
+  .smb-active {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .smb-url-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    color: var(--gray-500);
+    overflow: hidden;
+  }
+
+  .smb-url-text {
+    flex: 1;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--gray-600);
+  }
+
+  .smb-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .smb-copy {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    background: var(--gray-900);
+    color: var(--gray-50);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+
+  .smb-copy:hover {
+    background: var(--gray-800);
+  }
+
+  .smb-copy.copied {
+    background: var(--green-500);
+  }
+
+  .smb-update {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 8px;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+
+  .smb-update:hover {
+    background: var(--gray-200);
+  }
+
+  .smb-revoke {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 8px;
+    background: var(--red-50);
+    color: var(--red-500);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+
+  .smb-revoke:hover {
+    background: var(--red-100, var(--red-50));
+  }
+
+  /* ── Error ── */
+  .smb-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: var(--red-500);
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+
+  .smb-error:hover {
+    background: var(--red-600);
   }
 }

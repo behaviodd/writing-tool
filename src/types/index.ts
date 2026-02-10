@@ -35,6 +35,17 @@ export interface ProjectMeta {
   totalCharacters: number;
 }
 
+export interface SharedDocument {
+  id: string;
+  projectId: string;
+  ownerId: string;
+  projectName: string;
+  bundles: Bundle[];
+  createdAt: number;
+  expiresAt: number;
+  updatedAt: number;
+}
+
 export interface AppState {
   projects: ProjectMeta[];
   currentProjectId: string | null;

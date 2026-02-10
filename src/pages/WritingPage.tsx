@@ -312,6 +312,8 @@ export const WritingPage = () => {
         <PreviewModal
           bundles={project.manuscript}
           onClose={() => setShowPreviewModal(false)}
+          projectId={project.id}
+          projectName={project.name}
         />
       )}
 
