@@ -58,9 +58,6 @@ export const ProjectListPage = () => {
     setProjectToDelete(projectId);
   };
 
-  const calculateDelete = (e: React.MouseEvent, projectId: string) => {
-    // Kept for reference but unused, replacing with handleDeleteClick
-  }
 
   const handleConfirmDelete = () => {
     if (projectToDelete) {

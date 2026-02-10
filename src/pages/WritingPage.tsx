@@ -300,9 +300,11 @@ export const WritingPage = () => {
 
       {bundleToDelete && (
         <ConfirmModal
+          title="글 묶음 삭제"
           message="글 묶음을 삭제하시겠습니까?"
-          confirmLabel="삭제"
-          cancelLabel="취소"
+          confirmText="삭제"
+          cancelText="취소"
+          isDestructive
           onConfirm={confirmDeleteBundle}
           onCancel={() => setBundleToDelete(null)}
         />
