@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSharedDocument } from '../utils/share';
-import { countCharacters } from '../utils/exportWord';
 import type { SharedDocument } from '../types';
 import { Icon } from '../components/Icon/Icon';
 import './SharedViewPage.css';
@@ -82,21 +81,13 @@ export const SharedViewPage = () => {
 
   if (!shared) return null;
 
-  const totalChars = countCharacters(shared.bundles);
 
   return (
     <div className="shared-view-page">
-      <header className="shared-view-header">
-        <h1>{shared.projectName}</h1>
-        <span className="shared-view-char-count">
-          {totalChars.toLocaleString()}자
-        </span>
-        <span className="shared-view-badge">읽기 전용</span>
-      </header>
-
       <div className="shared-view-content">
         <div className="shared-view-frame">
           <div className="shared-view-document">
+            <h1 className="shared-document-title">{shared.projectName}</h1>
             {shared.bundles.map((bundle, bundleIndex) => (
               <div
                 key={bundle.id}
@@ -126,11 +117,6 @@ export const SharedViewPage = () => {
           </div>
         </div>
       </div>
-
-      <footer className="shared-view-footer">
-        공유된 원고 &middot; 만료:{' '}
-        {new Date(shared.expiresAt).toLocaleDateString('ko-KR')}
-      </footer>
     </div>
   );
 };
