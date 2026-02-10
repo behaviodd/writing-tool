@@ -288,28 +288,23 @@ export const ProjectListPage = () => {
                 className="project-card"
                 onClick={() => handleOpenProject(project.id)}
               >
-                <div className="card-header">
-                  <button
-                    className="delete-btn"
-                    onClick={(e) => handleDeleteClick(e, project.id)}
-                  >
-                    <Icon name="delete" size={20} />
-                  </button>
+                <div className="card-content">
+                  <h3 className="card-title">{project.name}</h3>
+                  <div className="card-meta-line">
+                    <span>{project.totalBundles}개 묶음</span>
+                    <span className="meta-separator"></span>
+                    <span>{project.totalCharacters.toLocaleString()}자</span>
+                    <span className="meta-separator"></span>
+                    <span>{formatDate(project.updatedAt)}</span>
+                  </div>
                 </div>
-                <h3 className="card-title">{project.name}</h3>
-                <div className="card-meta">
-                  <span className="meta-item">
-                    <Icon name="folder" size={16} />
-                    {project.totalBundles}개 묶음
-                  </span>
-                  <span className="meta-item">
-                    <Icon name="text_fields" size={16} />
-                    {project.totalCharacters.toLocaleString()}자
-                  </span>
-                </div>
-                <div className="card-footer">
-                  <span className="updated-at">{formatDate(project.updatedAt)}</span>
-                </div>
+
+                <button
+                  className="delete-btn"
+                  onClick={(e) => handleDeleteClick(e, project.id)}
+                >
+                  <Icon name="delete" size={18} />
+                </button>
               </div>
             ))}
           </div>
