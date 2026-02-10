@@ -4,6 +4,8 @@ import { exportToWord, generateWordBlob } from '../../utils/exportWord';
 import { uploadToGoogleDrive } from '../../utils/googleDrive';
 import { useAuth } from '../../contexts/AuthContext';
 import { Icon } from '../Icon/Icon';
+import { ThemeSettings } from '../ThemeSettings/ThemeSettings';
+import { useTheme } from '../../contexts/ThemeContext';
 import './Toolbar.css';
 
 interface ToolbarProps {
@@ -11,7 +13,6 @@ interface ToolbarProps {
   onUpdateProjectName: (name: string) => void;
   onGoBack: () => void;
   onSave: () => void;
-  lastSavedAt: number | null;
 }
 
 export const Toolbar = ({
@@ -19,7 +20,6 @@ export const Toolbar = ({
   onUpdateProjectName,
   onGoBack,
   onSave,
-  lastSavedAt,
 }: ToolbarProps) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -39,6 +39,28 @@ export const Toolbar = ({
   const { getGoogleAccessToken } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [isSavingToDrive, setIsSavingToDrive] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastFading, setToastFading] = useState(false);
+  const [showThemeSettings, setShowThemeSettings] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
+  const showToast = (message: string) => {
+    setToastFading(false);
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastFading(true);
+      setTimeout(() => {
+        setToastMessage(null);
+        setToastFading(false);
+      }, 300);
+    }, 2200);
+  };
+
+  const handleSave = () => {
+    onSave();
+    const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    showToast(`${time}에 저장됨`);
+  };
 
   const handleDownloadWord = async () => {
     if (project.manuscript.length === 0) {
@@ -101,27 +123,24 @@ export const Toolbar = ({
             onChange={(e) => onUpdateProjectName(e.target.value)}
             placeholder="프로젝트 이름"
           />
+          <span className={`sync-icon ${isOnline ? 'online' : 'offline'}`} title={isOnline ? '온라인' : '오프라인'}>
+            <Icon name={isOnline ? 'cloud_done' : 'cloud_off'} size={16} />
+          </span>
         </div>
       </div>
 
       <div className="toolbar-right">
-        <div className="save-area">
-          <button className="toolbar-btn save-btn" onClick={onSave}>
-            <Icon name="save" size={20} />
-            <span>저장</span>
-          </button>
-          {lastSavedAt && (
-            <span className="last-saved-time">
-              {new Date(lastSavedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} 저장됨
-            </span>
-          )}
-        </div>
-        <div className={`sync-status ${isOnline ? 'online' : 'offline'}`}>
-          <Icon name={isOnline ? 'cloud_done' : 'cloud_off'} size={18} />
-          <span>{isOnline ? '온라인' : '오프라인'}</span>
-        </div>
+        <button className="toolbar-btn" onClick={toggleTheme} title={theme === 'light' ? '다크 모드' : '라이트 모드'}>
+          <Icon name={theme === 'light' ? 'dark_mode' : 'light_mode'} size={20} />
+        </button>
+        <button className="toolbar-btn" onClick={() => setShowThemeSettings(true)} title="설정">
+          <Icon name="settings" size={20} />
+        </button>
+        <button className="toolbar-btn save-btn" onClick={handleSave}>
+          <Icon name="save" size={20} />
+        </button>
         <button
-          className="toolbar-btn primary"
+          className="toolbar-btn"
           onClick={handleDownloadWord}
           disabled={isExporting || project.manuscript.length === 0}
         >
@@ -129,7 +148,7 @@ export const Toolbar = ({
           <span>{isExporting ? '다운로드 중...' : '원고 다운로드'}</span>
         </button>
         <button
-          className="toolbar-btn"
+          className="toolbar-btn primary drive-btn"
           onClick={handleSaveToDrive}
           disabled={isSavingToDrive || project.manuscript.length === 0}
         >
@@ -137,6 +156,12 @@ export const Toolbar = ({
           <span>{isSavingToDrive ? '저장 중...' : '드라이브에 저장'}</span>
         </button>
       </div>
+      {toastMessage && (
+        <div className={`save-toast ${toastFading ? 'toast-out' : ''}`}>{toastMessage}</div>
+      )}
+      {showThemeSettings && (
+        <ThemeSettings onClose={() => setShowThemeSettings(false)} />
+      )}
     </header>
   );
 };

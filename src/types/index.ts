@@ -1,10 +1,3 @@
-export interface TextFragment {
-  id: string;
-  content: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
 export interface FormattingOptions {
   fontSize: number;
   lineHeight: number;
@@ -18,7 +11,7 @@ export interface FormattingOptions {
 export interface Bundle {
   id: string;
   title: string;
-  fragments: TextFragment[];
+  content: string;
   formatting: FormattingOptions;
   createdAt: number;
 }
@@ -29,7 +22,6 @@ export interface Project {
   drafts: Bundle[];
   manuscript: Bundle[];
   currentBundleId: string | null;
-  currentFragmentId: string | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -59,17 +51,10 @@ export const defaultFormatting: FormattingOptions = {
   paragraphSpacing: 12,
 };
 
-export const createTextFragment = (content: string = ''): TextFragment => ({
-  id: crypto.randomUUID(),
-  content,
-  createdAt: Date.now(),
-  updatedAt: Date.now(),
-});
-
 export const createBundle = (title: string = '새 글 묶음'): Bundle => ({
   id: crypto.randomUUID(),
   title,
-  fragments: [createTextFragment()],
+  content: '',
   formatting: { ...defaultFormatting },
   createdAt: Date.now(),
 });
@@ -80,16 +65,18 @@ export const createProject = (name: string = '새 프로젝트'): Project => ({
   drafts: [],
   manuscript: [],
   currentBundleId: null,
-  currentFragmentId: null,
   createdAt: Date.now(),
   updatedAt: Date.now(),
 });
 
 export const getProjectMeta = (project: Project): ProjectMeta => {
   const totalBundles = project.drafts.length + project.manuscript.length;
+  const temp = document.createElement('div');
   const totalCharacters = [...project.drafts, ...project.manuscript].reduce(
-    (total, bundle) =>
-      total + bundle.fragments.reduce((sum, f) => sum + f.content.length, 0),
+    (total, bundle) => {
+      temp.innerHTML = bundle.content;
+      return total + (temp.textContent?.length || 0);
+    },
     0
   );
 

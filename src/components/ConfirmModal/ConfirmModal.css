@@ -13,7 +13,7 @@
 }
 
 .confirm-content {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   width: 100%;
   max-width: 320px;
@@ -79,7 +79,7 @@
 
 .confirm-actions .btn-confirm {
   background: var(--red-500);
-  color: var(--white);
+  color: #ffffff;
 }
 
 .confirm-actions .btn-confirm:hover {

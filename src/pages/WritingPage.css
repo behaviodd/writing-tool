@@ -71,9 +71,15 @@
   }
 
   .mobile-tab-panel {
-    display: none !important;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   .draft-section,
@@ -89,13 +95,17 @@
     flex: 1;
     min-height: 0;
     height: 100%;
+    position: relative;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
   }
 
   .mobile-tab-bar {
     display: flex;
     align-items: stretch;
-    background: var(--white);
-    border-top: 1px solid var(--gray-100);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
     flex-shrink: 0;
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -141,7 +151,7 @@
     top: 4px;
     right: calc(50% - 24px);
     background: var(--blue-500);
-    color: var(--white);
+    color: #ffffff;
     font-size: 10px;
     font-weight: 600;
     min-width: 16px;
@@ -157,7 +167,7 @@
 /* Drag Overlay */
 .drag-overlay-bundle {
   padding: 12px 16px;
-  background: var(--white);
+  background: var(--surface);
   border: 2px solid var(--blue-400);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);

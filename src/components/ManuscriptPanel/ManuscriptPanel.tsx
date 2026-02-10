@@ -14,10 +14,8 @@ interface ManuscriptPanelProps {
   currentBundleId: string | null;
   onSelectBundle: (bundleId: string) => void;
   onDeleteBundle: (bundleId: string) => void;
-  onMoveBundle?: (bundleId: string) => void;
-  onToggleFormat: () => void;
+  onReorderBundle?: (oldIndex: number, newIndex: number) => void;
   onOpenPreview: () => void;
-  showFormatSidebar: boolean;
   isDropTarget?: boolean;
 }
 
@@ -26,10 +24,8 @@ export const ManuscriptPanel = ({
   currentBundleId,
   onSelectBundle,
   onDeleteBundle,
-  onMoveBundle,
-  onToggleFormat,
+  onReorderBundle,
   onOpenPreview,
-  showFormatSidebar,
   isDropTarget = false,
 }: ManuscriptPanelProps) => {
   const { setNodeRef, isOver } = useDroppable({
@@ -37,7 +33,6 @@ export const ManuscriptPanel = ({
   });
 
   const totalChars = countCharacters(bundles);
-  const currentBundle = bundles.find((b) => b.id === currentBundleId);
 
   return (
     <div className={`manuscript-panel ${isDropTarget || isOver ? 'drop-target' : ''}`}>
@@ -47,31 +42,20 @@ export const ManuscriptPanel = ({
           <h3>원고</h3>
           <span className="count-badge">{bundles.length}</span>
         </div>
-        <div className="header-stats">
+        <div className="header-actions">
           <span className="total-chars">
             <Icon name="text_fields" size={16} />
             {totalChars.toLocaleString()}자
           </span>
+          <button
+            className="preview-header-btn"
+            onClick={onOpenPreview}
+            disabled={bundles.length === 0}
+            title="미리보기"
+          >
+            <Icon name="visibility" size={18} />
+          </button>
         </div>
-      </div>
-
-      <div className="panel-actions">
-        <button
-          className="preview-btn"
-          onClick={onOpenPreview}
-          disabled={bundles.length === 0}
-        >
-          <Icon name="visibility" size={18} />
-          미리보기
-        </button>
-        <button
-          className={`format-btn ${showFormatSidebar ? 'active' : ''}`}
-          onClick={onToggleFormat}
-          disabled={!currentBundle}
-        >
-          <Icon name="format_paint" size={18} />
-          서식
-        </button>
       </div>
 
       <div className="manuscript-content">
@@ -86,15 +70,15 @@ export const ManuscriptPanel = ({
                 items={bundles.map((b) => b.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {bundles.map((bundle) => (
+                {bundles.map((bundle, index) => (
                   <BundleCard
                     key={bundle.id}
                     bundle={bundle}
                     isSelected={bundle.id === currentBundleId}
                     onSelect={() => onSelectBundle(bundle.id)}
                     onDelete={() => onDeleteBundle(bundle.id)}
-                    onMove={onMoveBundle ? () => onMoveBundle(bundle.id) : undefined}
-                    moveLabel="초안으로 이동"
+                    onMoveUp={onReorderBundle && index > 0 ? () => onReorderBundle(index, index - 1) : undefined}
+                    onMoveDown={onReorderBundle && index < bundles.length - 1 ? () => onReorderBundle(index, index + 1) : undefined}
                   />
                 ))}
               </SortableContext>

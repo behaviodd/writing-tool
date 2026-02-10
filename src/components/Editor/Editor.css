@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -14,9 +14,9 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--border);
   color: var(--gray-400);
   text-align: center;
   padding: 40px;
@@ -35,19 +35,14 @@
 }
 
 .editor-header {
-  padding: 12px 20px 8px;
-  border-bottom: 1px solid var(--gray-100);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
 }
 
-.editor .header-top {
+.header-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.header-title-row {
-  display: flex;
-  align-items: center;
+  gap: 10px;
 }
 
 .bundle-title-input {
@@ -57,6 +52,7 @@
   color: var(--gray-900);
   background: transparent;
   padding: 4px 0;
+  min-width: 0;
 }
 
 .bundle-title-input::placeholder {
@@ -72,6 +68,7 @@
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .location-badge.clickable {
@@ -99,87 +96,6 @@
   color: var(--blue-700);
 }
 
-.fragment-tabs {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--gray-100);
-  flex-wrap: wrap;
-}
-
-.fragment-tab {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background: var(--gray-50);
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-600);
-  transition: all 0.15s ease;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-}
-
-.fragment-tab:hover {
-  background: var(--gray-100);
-}
-
-.fragment-tab.active {
-  background: var(--gray-900);
-  color: var(--white);
-}
-
-.delete-fragment {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
-}
-
-.delete-fragment:hover {
-  opacity: 1;
-}
-
-.fragment-tab.active .delete-fragment:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.add-fragment-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gray-500);
-  border: 1px dashed var(--gray-300);
-  transition: all 0.15s ease;
-}
-
-.add-fragment-btn:hover {
-  border-color: var(--gray-400);
-  color: var(--gray-700);
-  background: var(--gray-50);
-}
-
-.drag-overlay-fragment {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  cursor: grabbing;
-}
-
-/* Mobile back button - hidden on desktop */
-.mobile-back-btn {
-  display: none;
-}
-
 .editor-content {
   flex: 1;
   padding: 20px;
@@ -202,7 +118,7 @@
 
 .editor-footer {
   padding: 12px 20px;
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: flex-end;
 }
@@ -223,39 +139,13 @@
     width: 100%;
   }
 
-  .editor-empty {
-    position: relative;
-  }
-
   .editor-header {
-    padding: 8px 12px 4px;
-  }
-
-  .editor .header-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 32px;
+    padding: 8px 12px;
   }
 
   .bundle-title-input {
     font-size: 15px;
     padding: 2px 0;
-    min-width: 0;
-  }
-
-  .location-badge {
-    flex-shrink: 0;
-  }
-
-  .fragment-tabs {
-    padding: 8px 12px;
-    gap: 4px;
-  }
-
-  .fragment-tab {
-    padding: 6px 10px;
-    font-size: 12px;
   }
 
   .editor-content {
@@ -264,40 +154,5 @@
 
   .editor-footer {
     padding: 8px 12px;
-  }
-
-  .mobile-back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    color: var(--gray-600);
-    transition: all 0.15s ease;
-  }
-
-  .mobile-back-btn:hover {
-    background: var(--gray-100);
-    color: var(--gray-900);
-  }
-
-  .mobile-back-btn > span:not(.icon) {
-    display: none;
-  }
-
-  .editor-empty .mobile-back-btn {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    width: auto;
-    padding: 8px 14px;
-  }
-
-  .editor-empty .mobile-back-btn > span:not(.icon) {
-    display: inline;
-    font-size: 14px;
-    font-weight: 500;
   }
 }

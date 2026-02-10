@@ -1,6 +1,6 @@
 .project-list-page {
   min-height: 100vh;
-  background: var(--gray-50);
+  background: var(--background);
 }
 
 /* Loading Screen */
@@ -11,14 +11,14 @@
   justify-content: center;
   height: 100vh;
   gap: 16px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
 }
 
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--gray-200);
-  border-top-color: var(--gray-900);
+  border: 3px solid var(--border);
+  border-top-color: var(--text-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -30,7 +30,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Login Screen */
@@ -56,6 +58,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -65,13 +68,13 @@
 .login-content h1 {
   font-size: 32px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
 .login-description {
   font-size: 15px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
   margin-bottom: 12px;
   line-height: 1.5;
 }
@@ -90,8 +93,8 @@
 
 /* Header */
 .page-header {
-  background: var(--white);
-  border-bottom: 1px solid var(--gray-100);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   padding: 32px 24px;
 }
 
@@ -110,13 +113,13 @@
 .page-header h1 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .header-subtitle {
   font-size: 15px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
 }
 
 /* Auth Section */
@@ -129,17 +132,17 @@
   align-items: center;
   gap: 10px;
   padding: 10px 20px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   transition: all 0.15s ease;
 }
 
 .google-sign-in-btn:hover {
-  background: var(--gray-50);
+  background: var(--surface-alt);
   border-color: var(--gray-300);
 }
 
@@ -164,18 +167,55 @@
 .user-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  transition: all 0.15s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--surface-alt);
+  color: var(--text-primary);
+}
+
+.settings-btn {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 0;
+}
+
+.settings-btn:hover {
+  color: var(--text-secondary);
+}
+
+.divider {
+  font-size: 12px;
+  color: var(--gray-300);
 }
 
 .sign-out-btn {
   font-size: 12px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
   text-align: left;
   padding: 0;
 }
 
 .sign-out-btn:hover {
-  color: var(--gray-700);
+  color: var(--text-secondary);
 }
 
 .sync-indicator {
@@ -184,10 +224,10 @@
   gap: 8px;
   margin-top: 16px;
   padding: 8px 12px;
-  background: var(--blue-50);
+  background: var(--primary-50);
   border-radius: 8px;
   font-size: 13px;
-  color: var(--blue-600);
+  color: var(--primary-600);
 }
 
 /* Content */
@@ -207,7 +247,7 @@
 .section-header h2 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--gray-800);
+  color: var(--text-primary);
 }
 
 .header-actions {
@@ -228,22 +268,22 @@
 }
 
 .btn-primary {
-  background: var(--gray-900);
-  color: var(--white);
+  background: var(--primary-500);
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: var(--gray-800);
+  background: var(--primary-600);
 }
 
 .btn-secondary {
-  background: var(--white);
-  color: var(--gray-700);
-  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: var(--gray-50);
+  background: var(--surface-alt);
   border-color: var(--gray-300);
 }
 
@@ -260,19 +300,19 @@
   justify-content: center;
   padding: 80px 24px;
   text-align: center;
-  color: var(--gray-400);
+  color: var(--text-tertiary);
 }
 
 .empty-state h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin: 24px 0 8px;
 }
 
 .empty-state p {
   font-size: 14px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
   margin-bottom: 24px;
 }
 
@@ -284,16 +324,16 @@
 }
 
 .project-card {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--border);
 }
 
 .project-card:hover {
-  border-color: var(--gray-200);
+  border-color: var(--gray-300);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   transform: translateY(-2px);
 }
@@ -308,12 +348,12 @@
 .card-icon {
   width: 44px;
   height: 44px;
-  background: var(--gray-100);
+  background: var(--surface-alt);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 .delete-btn {
@@ -323,7 +363,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gray-400);
+  color: var(--text-tertiary);
   opacity: 0;
   transition: all 0.15s ease;
 }
@@ -333,14 +373,14 @@
 }
 
 .delete-btn:hover {
-  background: var(--gray-100);
+  background: var(--surface-alt);
   color: var(--red-500);
 }
 
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -358,17 +398,17 @@
   align-items: center;
   gap: 4px;
   font-size: 13px;
-  color: var(--gray-500);
+  color: var(--text-tertiary);
 }
 
 .card-footer {
   padding-top: 12px;
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--border);
 }
 
 .updated-at {
   font-size: 12px;
-  color: var(--gray-400);
+  color: var(--text-tertiary);
 }
 
 @media (max-width: 640px) {

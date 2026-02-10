@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--white);
-  border: 1px solid var(--gray-100);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
   cursor: pointer;
@@ -122,8 +122,12 @@
 }
 
 .action-btn.delete:hover {
-  background: #ffebee;
+  background: var(--red-50);
   color: var(--red-500);
+}
+
+.reorder-btns {
+  display: none;
 }
 
 @media (max-width: 768px) {
@@ -133,5 +137,25 @@
 
   .bundle-card {
     padding: 14px 12px;
+  }
+
+  .drag-handle {
+    display: none;
+  }
+
+  .reorder-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .action-btn.reorder {
+    width: 28px;
+    height: 24px;
+  }
+
+  .action-btn.reorder:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 }

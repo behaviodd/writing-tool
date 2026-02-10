@@ -65,11 +65,35 @@ export const saveProject = (project: Project, userId?: string): void => {
   }
 };
 
+// Migrate old fragment-based bundles to new content-based format
+const migrateBundle = (bundle: any): any => {
+  if (bundle.fragments && !('content' in bundle)) {
+    const content = bundle.fragments
+      .map((f: any) => f.content || '')
+      .join('');
+    const { fragments, ...rest } = bundle;
+    return { ...rest, content };
+  }
+  return bundle;
+};
+
+const migrateProject = (project: any): Project => {
+  const migrated = {
+    ...project,
+    drafts: (project.drafts || []).map(migrateBundle),
+    manuscript: (project.manuscript || []).map(migrateBundle),
+  };
+  // Remove currentFragmentId if it exists
+  delete migrated.currentFragmentId;
+  return migrated as Project;
+};
+
 export const loadProject = (projectId: string): Project | null => {
   try {
     const data = localStorage.getItem(PROJECT_PREFIX + projectId);
     if (data) {
-      return JSON.parse(data) as Project;
+      const raw = JSON.parse(data);
+      return migrateProject(raw);
     }
   } catch (error) {
     console.error('Failed to load project:', error);
@@ -175,7 +199,13 @@ export const loadProjectsFromFirestore = async (
 
 export const syncFromFirestore = async (userId: string): Promise<void> => {
   try {
-    const firestoreProjects = await loadProjectsFromFirestore(userId);
+    // Skip sync if synced less than 5 minutes ago
+    if (Date.now() - getAppState().lastSyncedAt < 5 * 60 * 1000) {
+      return;
+    }
+
+    const firestoreProjectsRaw = await loadProjectsFromFirestore(userId);
+    const firestoreProjects = firestoreProjectsRaw.map(migrateProject);
     const firestoreIds = new Set(firestoreProjects.map((p) => p.id));
 
     for (const project of firestoreProjects) {

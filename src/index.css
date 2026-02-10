@@ -1,5 +1,5 @@
 :root {
-  /* TDS Colors */
+  /* Base Colors - Light Mode */
   --gray-50: #f9fafb;
   --gray-100: #f2f4f6;
   --gray-200: #e5e8eb;
@@ -11,38 +11,148 @@
   --gray-800: #333d4b;
   --gray-900: #191f28;
 
-  --blue-50: #e8f3ff;
-  --blue-100: #c9e2ff;
-  --blue-200: #90c2ff;
-  --blue-300: #64a8ff;
-  --blue-400: #4593fc;
-  --blue-500: #3182f6;
-  --blue-600: #2272eb;
-  --blue-700: #1b64da;
-  --blue-800: #1957c2;
-  --blue-900: #194aa6;
+  --white: #ffffff;
+  --black: #000000;
 
+  /* Semantic Colors */
+  --background: var(--gray-50);
+  --surface: var(--white);
+  --surface-alt: var(--gray-100);
+  --border: var(--gray-200);
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-tertiary: var(--gray-500);
+
+  /* Functional Colors */
   --red-50: #fff5f5;
   --red-500: #f04452;
   --red-600: #e53935;
   --green-500: #30b06e;
 
-  --white: #ffffff;
-  --background: var(--gray-50);
+  /* Blue UI Colors (accent-independent, for selection/interaction states) */
+  --blue-50: #e8f3ff;
+  --blue-100: #c9e2ff;
+  --blue-400: #4593fc;
+  --blue-500: #3182f6;
+  --blue-600: #2272eb;
+  --blue-700: #1b64da;
+
+  /* Accent Colors - Blue (Default) */
+  --primary-50: #e8f3ff;
+  --primary-100: #c9e2ff;
+  --primary-200: #90c2ff;
+  --primary-300: #64a8ff;
+  --primary-400: #4593fc;
+  --primary-500: #3182f6;
+  --primary-600: #2272eb;
+  --primary-700: #1b64da;
+  --primary-800: #1957c2;
+  --primary-900: #194aa6;
 
   /* Typography */
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light;
-  color: var(--gray-900);
+  color: var(--text-primary);
   background-color: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme='dark'] {
+  /* Base Colors - Dark Mode Reversal */
+  --gray-50: #191f28;
+  --gray-100: #333d4b;
+  --gray-200: #4e5968;
+  --gray-300: #6b7684;
+  --gray-400: #8b95a1;
+  --gray-500: #b0b8c1;
+  --gray-600: #d1d6db;
+  --gray-700: #e5e8eb;
+  --gray-800: #f2f4f6;
+  --gray-900: #f9fafb;
+
+  --background: #121212;
+  --surface: #1e1e1e;
+  --surface-alt: #2c2c2c;
+  --border: #333333;
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-tertiary: var(--gray-500);
+
+  /* Functional Colors - Dark Mode */
+  --red-50: #2d1a1a;
+  --red-500: #ff6b6b;
+  --red-600: #ff5252;
+  --green-500: #4ade80;
+
+  /* Blue UI Colors - Dark Mode */
+  --blue-50: #0f2040;
+  --blue-100: #163060;
+  --blue-400: #4593fc;
+  --blue-500: #3b8cfc;
+  --blue-600: #64a8ff;
+  --blue-700: #90c2ff;
+
+  color-scheme: dark;
+}
+
+/* Accent Color Palettes */
+[data-accent-color='purple'] {
+  --primary-50: #f3e8ff;
+  --primary-100: #e9d5ff;
+  --primary-200: #d8b4fe;
+  --primary-300: #c084fc;
+  --primary-400: #a855f7;
+  --primary-500: #8b5cf6;
+  --primary-600: #7c3aed;
+  --primary-700: #6d28d9;
+  --primary-800: #5b21b6;
+  --primary-900: #4c1d95;
+}
+
+[data-accent-color='green'] {
+  --primary-50: #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
+}
+
+[data-accent-color='red'] {
+  --primary-50: #fef2f2;
+  --primary-100: #fee2e2;
+  --primary-200: #fecaca;
+  --primary-300: #fca5a5;
+  --primary-400: #f87171;
+  --primary-500: #ef4444;
+  --primary-600: #dc2626;
+  --primary-700: #b91c1c;
+  --primary-800: #991b1b;
+  --primary-900: #7f1d1d;
+}
+
+[data-accent-color='orange'] {
+  --primary-50: #fff7ed;
+  --primary-100: #ffedd5;
+  --primary-200: #fed7aa;
+  --primary-300: #fdba74;
+  --primary-400: #fb923c;
+  --primary-500: #f97316;
+  --primary-600: #ea580c;
+  --primary-700: #c2410c;
+  --primary-800: #9a3412;
+  --primary-900: #7c2d12;
 }
 
 * {
@@ -54,11 +164,17 @@
 body {
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--background);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 button {
@@ -66,12 +182,16 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  color: var(--text-primary);
 }
 
-input, textarea {
+input,
+textarea {
   font-family: inherit;
   border: none;
   outline: none;
+  color: var(--text-primary);
+  background-color: transparent;
 }
 
 a {

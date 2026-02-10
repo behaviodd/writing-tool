@@ -8,6 +8,7 @@ import {
 import { saveAs } from 'file-saver';
 import type { Bundle, FormattingOptions } from '../types';
 
+const EXPORT_FONT_SIZE_PT = 11;
 const ptToHalfPt = (pt: number) => pt * 2;
 const pxToTwip = (px: number) => Math.round(px * 15);
 
@@ -36,7 +37,7 @@ const parseHtmlToTextRuns = (
         runs.push(
           new TextRun({
             text,
-            size: ptToHalfPt(inheritedStyle.fontSize || baseFormatting.fontSize),
+            size: ptToHalfPt(EXPORT_FONT_SIZE_PT),
             bold: inheritedStyle.bold || baseFormatting.bold,
             italics: inheritedStyle.italic || baseFormatting.italic,
             underline: inheritedStyle.underline || baseFormatting.underline ? {} : undefined,
@@ -49,7 +50,6 @@ const parseHtmlToTextRuns = (
       const element = node as HTMLElement;
       const tagName = element.tagName.toLowerCase();
 
-      // Build style for this element
       const newStyle: TextStyle = { ...inheritedStyle };
 
       switch (tagName) {
@@ -71,7 +71,6 @@ const parseHtmlToTextRuns = (
         case 'font':
           const size = element.getAttribute('size');
           if (size) {
-            // Convert HTML font size (1-7) to pt
             const sizeMap: Record<string, number> = {
               '1': 10,
               '2': 12,
@@ -89,7 +88,6 @@ const parseHtmlToTextRuns = (
           return;
       }
 
-      // Process children
       for (const child of element.childNodes) {
         processNode(child, newStyle);
       }
@@ -98,12 +96,11 @@ const parseHtmlToTextRuns = (
 
   processNode(temp);
 
-  // If no runs were created, return empty text
   if (runs.length === 0) {
     runs.push(
       new TextRun({
         text: '',
-        size: ptToHalfPt(baseFormatting.fontSize),
+        size: ptToHalfPt(EXPORT_FONT_SIZE_PT),
         font: 'Malgun Gothic',
       })
     );
@@ -132,7 +129,6 @@ const createParagraphFromHtml = (
 
 // Split HTML content into paragraphs (by div or double br)
 const splitIntoParagraphs = (html: string): string[] => {
-  // Replace div tags with markers
   let content = html
     .replace(/<div>/gi, '\n')
     .replace(/<\/div>/gi, '')
@@ -140,7 +136,6 @@ const splitIntoParagraphs = (html: string): string[] => {
     .replace(/<p>/gi, '\n')
     .replace(/<\/p>/gi, '');
 
-  // Split by newlines
   return content.split('\n').filter((p) => p.trim() !== '');
 };
 
@@ -150,7 +145,6 @@ export const generateWordBlob = async (
   const paragraphs: Paragraph[] = [];
 
   bundles.forEach((bundle, bundleIndex) => {
-    // Add spacing between bundles
     if (bundleIndex > 0) {
       paragraphs.push(
         new Paragraph({
@@ -159,23 +153,19 @@ export const generateWordBlob = async (
       );
     }
 
-    // Add fragments
-    bundle.fragments.forEach((fragment) => {
-      const htmlParagraphs = splitIntoParagraphs(fragment.content);
+    const htmlParagraphs = splitIntoParagraphs(bundle.content);
 
-      if (htmlParagraphs.length === 0) {
-        // Empty content
-        paragraphs.push(
-          new Paragraph({
-            spacing: { after: pxToTwip(bundle.formatting.paragraphSpacing) },
-          })
-        );
-      } else {
-        htmlParagraphs.forEach((htmlPara) => {
-          paragraphs.push(createParagraphFromHtml(htmlPara, bundle.formatting));
-        });
-      }
-    });
+    if (htmlParagraphs.length === 0) {
+      paragraphs.push(
+        new Paragraph({
+          spacing: { after: pxToTwip(bundle.formatting.paragraphSpacing) },
+        })
+      );
+    } else {
+      htmlParagraphs.forEach((htmlPara) => {
+        paragraphs.push(createParagraphFromHtml(htmlPara, bundle.formatting));
+      });
+    }
   });
 
   const doc = new Document({
@@ -209,19 +199,12 @@ export const exportToWord = async (
 
 export const countCharacters = (bundles: Bundle[]): number => {
   return bundles.reduce((total, bundle) => {
-    return (
-      total +
-      bundle.fragments.reduce((sum, fragment) => {
-        // Strip HTML tags for counting
-        const temp = document.createElement('div');
-        temp.innerHTML = fragment.content;
-        return sum + (temp.textContent?.length || 0);
-      }, 0)
-    );
+    const temp = document.createElement('div');
+    temp.innerHTML = bundle.content;
+    return total + (temp.textContent?.length || 0);
   }, 0);
 };
 
-// Convert HTML to plain text
 export const htmlToPlainText = (html: string): string => {
   const temp = document.createElement('div');
   temp.innerHTML = html;

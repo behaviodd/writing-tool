@@ -13,7 +13,7 @@
 }
 
 .modal-content {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   width: 100%;
   max-width: 400px;
@@ -37,7 +37,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-header h2 {
@@ -80,7 +80,7 @@
   font-size: 15px;
   border: 1px solid var(--gray-200);
   border-radius: 10px;
-  background: var(--white);
+  background: var(--surface);
   color: var(--gray-900);
   transition: all 0.15s ease;
 }
@@ -106,7 +106,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 16px 24px;
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--border);
 }
 
 .btn-cancel,
@@ -132,7 +132,7 @@
 
 .btn-create {
   background: var(--gray-900);
-  color: var(--white);
+  color: var(--gray-50);
 }
 
 .btn-create:hover:not(:disabled) {

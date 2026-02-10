@@ -125,23 +125,6 @@ export const RichTextEditor = ({
             <Icon name="strikethrough_s" size={18} />
           </button>
         </div>
-        <div className="toolbar-divider" />
-        <div className="toolbar-group">
-          <select
-            className="font-size-select"
-            onChange={(e) => execCommand('fontSize', e.target.value)}
-            defaultValue="3"
-            title="글씨 크기"
-          >
-            <option value="1">10pt</option>
-            <option value="2">12pt</option>
-            <option value="3">14pt</option>
-            <option value="4">16pt</option>
-            <option value="5">18pt</option>
-            <option value="6">24pt</option>
-            <option value="7">32pt</option>
-          </select>
-        </div>
         <div className="toolbar-spacer" />
         <span className="char-count">{getTextLength()}자</span>
       </div>

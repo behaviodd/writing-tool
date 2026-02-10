@@ -18,12 +18,11 @@ import { DraftPanel } from '../components/DraftPanel/DraftPanel';
 import { ManuscriptPanel } from '../components/ManuscriptPanel/ManuscriptPanel';
 import { Editor } from '../components/Editor/Editor';
 import { BundleCreateModal } from '../components/BundleCreateModal/BundleCreateModal';
-import { FormatSidebar } from '../components/FormatSidebar/FormatSidebar';
 import { ConfirmModal } from '../components/ConfirmModal/ConfirmModal';
 import { PreviewModal } from '../components/PreviewModal/PreviewModal';
 import { HelpModal } from '../components/HelpModal/HelpModal';
 import { Icon } from '../components/Icon/Icon';
-import type { Bundle, FormattingOptions } from '../types';
+import type { Bundle } from '../types';
 import './WritingPage.css';
 
 type MobileTab = 'drafts' | 'editor' | 'manuscript';
@@ -33,7 +32,6 @@ export const WritingPage = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showFormatSidebar, setShowFormatSidebar] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [activeBundle, setActiveBundle] = useState<Bundle | null>(null);
@@ -51,14 +49,9 @@ export const WritingPage = () => {
     moveBundleBetweenContainers,
     moveBundleToManuscript,
     moveBundleToDraft,
-    addFragment,
-    updateFragment,
-    deleteFragment,
-    reorderFragments,
+    updateBundleContent,
     setCurrentBundle,
-    setCurrentFragment,
     getCurrentBundle,
-    getCurrentFragment,
     loadProjectById,
   } = useProject();
 
@@ -76,7 +69,7 @@ export const WritingPage = () => {
     useSensor(KeyboardSensor)
   );
 
-  const { save, lastSavedAt } = useAutoSave(project, 30000, user?.uid);
+  const { save } = useAutoSave(project, 30000, user?.uid);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -94,9 +87,7 @@ export const WritingPage = () => {
   }, [projectId, user]);
 
   const currentBundle = getCurrentBundle();
-  const currentFragment = getCurrentFragment();
 
-  // Determine which container the current bundle is in
   const getBundleLocation = (): 'drafts' | 'manuscript' | null => {
     if (!currentBundle || !project) return null;
     if (project.drafts.some(b => b.id === currentBundle.id)) return 'drafts';
@@ -107,12 +98,6 @@ export const WritingPage = () => {
 
   const handleUpdateBundleTitle = (bundleId: string, title: string) => {
     updateBundle(bundleId, { title });
-  };
-
-  const handleUpdateFormatting = (formatting: FormattingOptions) => {
-    if (currentBundle) {
-      updateBundle(currentBundle.id, { formatting });
-    }
   };
 
   const handleGoBack = () => {
@@ -135,7 +120,6 @@ export const WritingPage = () => {
     }
   };
 
-  // Drag and Drop handlers
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const bundleId = active.id as string;
@@ -152,7 +136,6 @@ export const WritingPage = () => {
       if (overId === 'drafts' || overId === 'manuscript') {
         setOverContainer(overId);
       } else {
-        // Check if over a bundle in drafts or manuscript
         const inDrafts = project?.drafts.some(b => b.id === overId);
         const inManuscript = project?.manuscript.some(b => b.id === overId);
         if (inDrafts) setOverContainer('drafts');
@@ -173,10 +156,8 @@ export const WritingPage = () => {
     const activeId = active.id as string;
     const overId = over.id as string;
 
-    // Find which container the active item is from
     const fromDrafts = project.drafts.some(b => b.id === activeId);
 
-    // Determine target container
     let toContainer: 'drafts' | 'manuscript' | null = null;
     if (overId === 'drafts' || overId === 'manuscript') {
       toContainer = overId;
@@ -192,7 +173,6 @@ export const WritingPage = () => {
     const fromContainer = fromDrafts ? 'drafts' : 'manuscript';
 
     if (fromContainer === toContainer) {
-      // Same container - reorder
       const items = fromContainer === 'drafts' ? project.drafts : project.manuscript;
       const oldIndex = items.findIndex(b => b.id === activeId);
       let newIndex = items.findIndex(b => b.id === overId);
@@ -205,7 +185,6 @@ export const WritingPage = () => {
         reorderBundles(fromContainer, oldIndex, newIndex);
       }
     } else {
-      // Different container - move between
       moveBundleBetweenContainers(activeId, fromContainer, toContainer);
     }
   };
@@ -221,7 +200,6 @@ export const WritingPage = () => {
         onUpdateProjectName={(name) => updateProject({ name })}
         onGoBack={handleGoBack}
         onSave={save}
-        lastSavedAt={lastSavedAt}
       />
 
       <DndContext
@@ -238,7 +216,6 @@ export const WritingPage = () => {
               currentBundleId={project.currentBundleId}
               onSelectBundle={handleMobileSelectBundle}
               onDeleteBundle={handleDeleteBundle}
-              onMoveBundle={moveBundleToManuscript}
               onAddBundle={() => setShowCreateModal(true)}
               onShowHelp={() => setShowHelpModal(true)}
               isDropTarget={overContainer === 'drafts'}
@@ -248,14 +225,9 @@ export const WritingPage = () => {
           <div className={`panel editor-section mobile-tab-panel ${mobileTab === 'editor' ? 'mobile-active' : ''}`}>
             <Editor
               bundle={currentBundle}
-              currentFragment={currentFragment}
               bundleLocation={bundleLocation}
-              onUpdateFragment={updateFragment}
-              onAddFragment={addFragment}
-              onDeleteFragment={deleteFragment}
-              onSelectFragment={setCurrentFragment}
+              onUpdateContent={updateBundleContent}
               onUpdateBundleTitle={handleUpdateBundleTitle}
-              onReorderFragment={reorderFragments}
               onToggleLocation={() => {
                 if (!currentBundle) return;
                 if (bundleLocation === 'drafts') {
@@ -264,7 +236,6 @@ export const WritingPage = () => {
                   moveBundleToDraft(currentBundle.id);
                 }
               }}
-              onMobileBack={() => setMobileTab(bundleLocation || 'drafts')}
             />
           </div>
 
@@ -274,10 +245,8 @@ export const WritingPage = () => {
               currentBundleId={project.currentBundleId}
               onSelectBundle={handleMobileSelectBundle}
               onDeleteBundle={handleDeleteBundle}
-              onMoveBundle={moveBundleToDraft}
-              onToggleFormat={() => setShowFormatSidebar(!showFormatSidebar)}
+              onReorderBundle={(oldIndex, newIndex) => reorderBundles('manuscript', oldIndex, newIndex)}
               onOpenPreview={() => setShowPreviewModal(true)}
-              showFormatSidebar={showFormatSidebar}
               isDropTarget={overContainer === 'manuscript'}
             />
           </div>
@@ -321,14 +290,6 @@ export const WritingPage = () => {
           )}
         </DragOverlay>
       </DndContext>
-
-      {showFormatSidebar && currentBundle && (
-        <FormatSidebar
-          formatting={currentBundle.formatting}
-          onChange={handleUpdateFormatting}
-          onClose={() => setShowFormatSidebar(false)}
-        />
-      )}
 
       {showCreateModal && (
         <BundleCreateModal

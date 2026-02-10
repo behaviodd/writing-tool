@@ -4,13 +4,19 @@ import type { Bundle } from '../../types';
 import { Icon } from '../Icon/Icon';
 import './BundleCard.css';
 
+const stripHtml = (html: string): string => {
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  return temp.textContent || temp.innerText || '';
+};
+
 interface BundleCardProps {
   bundle: Bundle;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
-  onMove?: () => void;
-  moveLabel?: string;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }
 
 export const BundleCard = ({
@@ -18,8 +24,8 @@ export const BundleCard = ({
   isSelected,
   onSelect,
   onDelete,
-  onMove,
-  moveLabel,
+  onMoveUp,
+  onMoveDown,
 }: BundleCardProps) => {
   const {
     attributes,
@@ -36,12 +42,9 @@ export const BundleCard = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const totalChars = bundle.fragments.reduce(
-    (sum, f) => sum + f.content.length,
-    0
-  );
-
-  const preview = bundle.fragments[0]?.content.slice(0, 60) || '빈 글 묶음';
+  const plainText = stripHtml(bundle.content);
+  const charCount = plainText.length;
+  const preview = plainText.slice(0, 60) || '빈 글 묶음';
 
   return (
     <div
@@ -58,24 +61,30 @@ export const BundleCard = ({
           <h4 className="bundle-title">{bundle.title}</h4>
           <p className="bundle-preview">{preview}</p>
           <div className="bundle-meta">
-            <span>{bundle.fragments.length}개 조각</span>
-            <span className="meta-dot" />
-            <span>{totalChars.toLocaleString()}자</span>
+            <span>{charCount.toLocaleString()}자</span>
           </div>
         </div>
       </div>
       <div className="bundle-actions">
-        {onMove && (
-          <button
-            className="action-btn move"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMove();
-            }}
-            title={moveLabel || '이동'}
-          >
-            <Icon name="drive_file_move" size={18} />
-          </button>
+        {(onMoveUp || onMoveDown) && (
+          <div className="reorder-btns">
+            <button
+              className="action-btn reorder"
+              onClick={(e) => { e.stopPropagation(); onMoveUp?.(); }}
+              disabled={!onMoveUp}
+              title="위로"
+            >
+              <Icon name="keyboard_arrow_up" size={18} />
+            </button>
+            <button
+              className="action-btn reorder"
+              onClick={(e) => { e.stopPropagation(); onMoveDown?.(); }}
+              disabled={!onMoveDown}
+              title="아래로"
+            >
+              <Icon name="keyboard_arrow_down" size={18} />
+            </button>
+          </div>
         )}
         <button
           className="action-btn delete"

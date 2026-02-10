@@ -15,10 +15,7 @@ export const BundleCreateModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedTitle = title.trim();
-    if (trimmedTitle) {
-      onCreate(trimmedTitle);
-    }
+    onCreate(title.trim() || '새 글 묶음');
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -58,7 +55,6 @@ export const BundleCreateModal = ({
             <button
               type="submit"
               className="btn-create"
-              disabled={!title.trim()}
             >
               <Icon name="add" size={18} />
               저장
